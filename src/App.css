@@ -1,0 +1,122 @@
+body {
+  background: #f7fafc;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 32px 24px 24px 24px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.chicken-header {
+  color: #e53e3e; /* red */
+  display: inline;
+}
+
+.banana-header {
+  color: #ecc94b; /* yellow */
+  display: inline;
+}
+
+.and-header {
+  color: #222;
+  font-weight: bold;
+  display: inline;
+}
+
+.grid {
+  margin: 24px auto 0 auto;
+}
+
+.square {
+  border-radius: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  outline: none;
+}
+
+.square:active {
+  background: #bee3f8 !important;
+}
+
+.square img {
+  display: block;
+  margin: 0 auto;
+  border-radius: 6px;
+}
+
+button[disabled] {
+  opacity: 0.6;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+  text-align: left;
+}
+
+@media (max-width: 700px) {
+  .container {
+    max-width: 98vw;
+    padding: 10px;
+  }
+  .grid {
+    gap: 4px !important;
+  }
+  .square {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
