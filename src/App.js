@@ -7,7 +7,7 @@ const CHICKEN_IMG = chickenImg;
 const BANANA_IMG = bananaImg;
 
 function getShuffledTiles() {
-  const tiles = Array(18).fill({ type: 'chicken', img: CHICKEN_IMG })
+  const tiles = Array(18).fill({ type: 'chickenban', img: CHICKEN_IMG })
     .concat(Array(18).fill({ type: 'banana', img: BANANA_IMG }));
   for (let i = tiles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -19,41 +19,44 @@ function getShuffledTiles() {
 function App() {
   const [tiles, setTiles] = useState(getShuffledTiles());
   const [revealed, setRevealed] = useState(Array(36).fill(false));
-  const [player, setPlayer] = useState('chicken');
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState('');
   const [scores, setScores] = useState({ chicken: 0, banana: 0 });
+  const [playerSide, setPlayerSide] = useState(null); // 'chicken' or 'banana'
 
   const chickenLeft = tiles.filter((tile, i) => tile.type === 'chicken' && !revealed[i]).length;
   const bananaLeft = tiles.filter((tile, i) => tile.type === 'banana' && !revealed[i]).length;
 
   function handleTileClick(idx) {
-    if (gameOver || revealed[idx]) return;
+    if (gameOver || revealed[idx] || !playerSide) return;
 
-    if (tiles[idx].type === player) {
+    const type = tiles[idx].type;
+    if (type !== playerSide) {
+      setGameOver(true);
+      setWinner(type === 'chicken' ? 'Banana Player' : 'Chicken Player');
+      setScores(prev =>
+        type === 'chicken'
+          ? { ...prev, banana: prev.banana + 1 }
+          : { ...prev, chicken: prev.chicken + 1 }
+      );
       const updatedRevealed = [...revealed];
       updatedRevealed[idx] = true;
       setRevealed(updatedRevealed);
+      return;
+    }
 
-      if (player === 'chicken' && chickenLeft === 1) {
-        setGameOver(true);
-        setWinner('Chicken Player');
-        setScores(prev => ({ ...prev, chicken: prev.chicken + 1 }));
-      } else if (player === 'banana' && bananaLeft === 1) {
-        setGameOver(true);
-        setWinner('Banana Player');
-        setScores(prev => ({ ...prev, banana: prev.banana + 1 }));
-      } else {
-        setPlayer(player === 'chicken' ? 'banana' : 'chicken');
-      }
-    } else {
+    const updatedRevealed = [...revealed];
+    updatedRevealed[idx] = true;
+    setRevealed(updatedRevealed);
+
+    const newLeft = playerSide === 'chicken' ? chickenLeft - 1 : bananaLeft - 1;
+    if (newLeft === 0) {
       setGameOver(true);
-      const winPlayer = player === 'chicken' ? 'Banana Player' : 'Chicken Player';
-      setWinner(winPlayer);
+      setWinner(playerSide === 'chicken' ? 'Chicken Player' : 'Banana Player');
       setScores(prev =>
-        player === 'chicken'
-          ? { ...prev, banana: prev.banana + 1 }
-          : { ...prev, chicken: prev.chicken + 1 }
+        playerSide === 'chicken'
+          ? { ...prev, chicken: prev.chicken + 1 }
+          : { ...prev, banana: prev.banana + 1 }
       );
     }
   }
@@ -63,7 +66,7 @@ function App() {
     setRevealed(Array(36).fill(false));
     setGameOver(false);
     setWinner('');
-    setPlayer('chicken');
+    setPlayerSide(null);
   }
 
   return (
@@ -79,11 +82,32 @@ function App() {
         <span style={{ color: '#222', margin: '0 10px' }}>|</span>
         <span style={{ color: '#ecc94b' }}>Banana: {scores.banana}</span>
       </div>
+      {!playerSide && (
+        <div style={{ margin: '20px 0' }}>
+          <b>Choose your side:</b>
+          <div style={{ marginTop: 10 }}>
+            <button
+              onClick={() => setPlayerSide('chicken')}
+              style={{ marginRight: 20, padding: '10px 20px', fontSize: 16, background: '#ffe5e5' }}
+            >
+              Play as Chicken
+            </button>
+            <button
+              onClick={() => setPlayerSide('banana')}
+              style={{ padding: '10px 20px', fontSize: 16, background: '#fffbe5' }}
+            >
+              Play as Banana
+            </button>
+          </div>
+        </div>
+      )}
       <p>
         Two players: <b>Chicken</b> and <b>Banana</b>.<br />
-        {gameOver
-          ? <span style={{ color: 'green', fontWeight: 'bold' }}>{winner} wins!</span>
-          : <>Current turn: <b>{player.charAt(0).toUpperCase() + player.slice(1)} Player</b></>
+        {!playerSide
+          ? <>Pick your side to start!</>
+          : gameOver
+            ? <span style={{ color: 'green', fontWeight: 'bold' }}>{winner} wins!</span>
+            : <>Click your tiles as fast as you can!<br />If you click the wrong tile, you lose!</>
         }
       </p>
       <div
@@ -104,11 +128,11 @@ function App() {
               height: 60,
               background: revealed[idx] ? '#f0f0f0' : '#ddd',
               border: '2px solid #aaa',
-              cursor: gameOver || revealed[idx] ? 'not-allowed' : 'pointer',
+              cursor: gameOver || revealed[idx] || !playerSide ? 'not-allowed' : 'pointer',
               padding: 0,
             }}
             onClick={() => handleTileClick(idx)}
-            disabled={gameOver || revealed[idx]}
+            disabled={gameOver || revealed[idx] || !playerSide}
           >
             {revealed[idx] ? (
               <img src={tile.img} alt={tile.type} style={{ width: '90%', height: '90%' }} />
