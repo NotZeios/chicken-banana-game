@@ -1,1 +1,1 @@
-**Chicken Banana Game** is a simple two-player React game where players take turns revealing tiles on a 6x6 grid, trying to find all of their assigned type (chicken or banana) before their opponent. The first to reveal all their tiles or catch the other player picking the wrong tile wins. The game keeps score and has a restart option.
+*Chicken Banana Game* is a fast-paced React game where you pick a side (Chicken or Banana) and try to reveal all your tiles without clicking the other player's tiles. If you click the wrong tile, you lose and the other player wins.
