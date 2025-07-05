@@ -7,7 +7,7 @@ const CHICKEN_IMG = chickenImg;
 const BANANA_IMG = bananaImg;
 
 function getShuffledTiles() {
-  const tiles = Array(18).fill({ type: 'chickenban', img: CHICKEN_IMG })
+  const tiles = Array(18).fill({ type: 'chicken', img: CHICKEN_IMG })
     .concat(Array(18).fill({ type: 'banana', img: BANANA_IMG }));
   for (let i = tiles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -22,7 +22,7 @@ function App() {
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState('');
   const [scores, setScores] = useState({ chicken: 0, banana: 0 });
-  const [playerSide, setPlayerSide] = useState(null); // 'chicken' or 'banana'
+  const [playerSide, setPlayerSide] = useState(null); 
 
   const chickenLeft = tiles.filter((tile, i) => tile.type === 'chicken' && !revealed[i]).length;
   const bananaLeft = tiles.filter((tile, i) => tile.type === 'banana' && !revealed[i]).length;
@@ -33,9 +33,10 @@ function App() {
     const type = tiles[idx].type;
     if (type !== playerSide) {
       setGameOver(true);
-      setWinner(type === 'chicken' ? 'Banana Player' : 'Chicken Player');
+      const otherSide = playerSide === 'chicken' ? 'Banana Player' : 'Chicken Player';
+      setWinner(otherSide);
       setScores(prev =>
-        type === 'chicken'
+        playerSide === 'chicken'
           ? { ...prev, banana: prev.banana + 1 }
           : { ...prev, chicken: prev.chicken + 1 }
       );
